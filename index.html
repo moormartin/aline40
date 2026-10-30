@@ -92,7 +92,9 @@
   const hint = $('scrollHint');
   hint.addEventListener('click', () => $('pick').scrollIntoView({ behavior: 'smooth', block: 'center' }));
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => hint.classList.toggle('hide', e.isIntersecting), { threshold: 0.6 }).observe($('pick'));
+    // Ausblenden, wenn der Button sichtbar ist oder gerade hochgeladen wird / fertig ist
+    new IntersectionObserver(([e]) => hint.classList.toggle('hide', e.isIntersecting || $('form').style.display === 'none'),
+      { threshold: 0.6 }).observe($('pick'));
   }
 
   $('file').addEventListener('change', async () => {
@@ -102,6 +104,7 @@
     try { localStorage.setItem('guestName', name); } catch (e) {}
 
     $('form').style.display = 'none';
+    hint.classList.add('hide');
     $('bar').style.display = 'block';
     let ok = 0, failed = 0;
     for (let i = 0; i < files.length; i++) {
